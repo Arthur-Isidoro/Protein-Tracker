@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Tracker - {{ nome }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="card">
+        <p class="eyebrow">Olá, {{ nome }}</p>
+        <h1>Seu progresso de hoje</h1>
+
+        <div class="ring-wrap">
+            <svg viewBox="0 0 160 160" class="ring">
+                <circle cx="80" cy="80" r="70" class="ring-bg"></circle>
+                <circle cx="80" cy="80" r="70" class="ring-fg"
+                    style="stroke-dashoffset: {{ (439.8 * (1 - progresso/100)) | round(1) }};"></circle>
+            </svg>
+            <div class="ring-label">
+                <span class="ring-number">{{ consumo | round(1) }}g</span>
+                <span class="ring-of">
+                    {% if faixa_unica %}
+                        de {{ meta_min | round(1) }}g
+                    {% else %}
+                        de {{ meta_max | round(1) }}g
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="status">
+            {% if faixa_unica %}
+                {% if meta_batida %}
+                    <p class="status-ok">Meta batida! 🎉</p>
+                {% else %}
+                    <p>Faltam <span class="mono">{{ restante | round(1) }}g</span> pra bater sua meta.</p>
+                {% endif %}
+            {% else %}
+                <p class="mono">Faixa: {{ meta_min | round(1) }}g – {{ meta_max | round(1) }}g</p>
+                {% if meta_max_batida %}
+                    <p class="status-ok">Meta máxima atingida! Parabéns!</p>
+                {% elif meta_batida %}
+                    <p class="status-ok">Meta mínima atingida! Você está na faixa ideal.</p>
+                {% else %}
+                    <p>Faltam <span class="mono">{{ restante | round(1) }}g</span> pra meta mínima.</p>
+                {% endif %}
+            {% endif %}
+        </div>
+
+        <form method="POST" class="form form-inline">
+            <label for="consumida">Adicionar proteína consumida (g)</label>
+            <input type="number" id="consumida" name="consumida" step="0.1" min="0" placeholder="Ex: 25" required autofocus>
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <a href="{{ url_for('reiniciar') }}" class="reset-link">Recomeçar o dia</a>
+    </main>
+</body>
+</html>

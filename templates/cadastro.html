@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protein Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="card">
+        <p class="eyebrow">Protein Tracker</p>
+        <h1>Quanto você precisa consumir hoje?</h1>
+        <p class="subtitle">Informe seus dados e a gente calcula sua meta diária de proteína.</p>
+
+        {% if erro %}
+            <div class="erro">{{ erro }}</div>
+        {% endif %}
+
+        <form method="POST" class="form">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+
+            <label for="peso">Peso (kg)</label>
+            <input type="number" id="peso" name="peso" step="0.1" min="1" placeholder="Ex: 72.5" required>
+
+            <label for="objetivo">Objetivo</label>
+            <select id="objetivo" name="objetivo" required>
+                <option value="" disabled selected>Escolha um objetivo</option>
+                <option value="manutenção">Manutenção</option>
+                <option value="ganho de massa">Ganho de massa</option>
+                <option value="perda de gordura">Perda de gordura</option>
+            </select>
+
+            <button type="submit">Calcular minha meta</button>
+        </form>
+    </main>
+</body>
+</html>
