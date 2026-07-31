@@ -1,17 +1,10 @@
-"""
-Protein Tracker - versão web
-Reaproveita a lógica original de user_register.py e protein_calculator.py,
-só que agora recebendo os dados via formulário HTML em vez de input().
-"""
-
 from flask import Flask, render_template, request, redirect, url_for, session
 
 app = Flask(__name__)
-app.secret_key = "troque-essa-chave-antes-de-publicar"  # necessário pra usar session
+app.secret_key = "chave-so-para-testes-locais"
 
 
 def calcular_meta(peso, objetivo):
-    """Mesma lógica do seu protein_calculator.py original."""
     if objetivo in ["manutencao", "manutenção"]:
         return peso * 1.6, peso * 1.6
     elif objetivo == "ganho de massa":
@@ -24,7 +17,6 @@ def calcular_meta(peso, objetivo):
 
 @app.route("/", methods=["GET", "POST"])
 def cadastro():
-    """Equivalente ao seu user_register.py, mas via formulário web."""
     erro = None
 
     if request.method == "POST":
@@ -57,8 +49,6 @@ def cadastro():
 
 @app.route("/tracker", methods=["GET", "POST"])
 def tracker():
-    """Equivalente ao seu protein_Intake.py, mas cada 'volta do loop'
-    vira uma requisição POST que atualiza o consumo guardado na sessão."""
     if "meta_min" not in session:
         return redirect(url_for("cadastro"))
 
@@ -101,7 +91,6 @@ def tracker():
 
 @app.route("/reiniciar")
 def reiniciar():
-    """Zera tudo e volta pro cadastro."""
     session.clear()
     return redirect(url_for("cadastro"))
 
