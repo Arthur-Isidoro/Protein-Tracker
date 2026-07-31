@@ -35,7 +35,6 @@ def cadastro():
             erro = 'Objetivo não reconhecido. Escolha "Manutenção", "Ganho de massa" ou "Perda de gordura".'
             return render_template("cadastro.html", erro=erro)
 
-        # guarda tudo na sessão, assim a pessoa navega entre páginas sem perder o progresso
         session["nome"] = nome
         session["objetivo"] = objetivo
         session["meta_min"] = meta_min
@@ -57,7 +56,7 @@ def tracker():
             consumida = float(request.form.get("consumida", ""))
             session["consumo"] += consumida
         except ValueError:
-            pass  # ignora entradas inválidas, mantém o consumo como estava
+            pass
 
     meta_min = session["meta_min"]
     meta_max = session["meta_max"]
