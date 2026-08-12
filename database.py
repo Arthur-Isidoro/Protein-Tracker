@@ -23,7 +23,7 @@ def init_db():
 
 def salvar_registro(data, proteina_consumida, meta_proteina):
     bateu = 1 if proteina_consumida >= meta_proteina else 0
-    conn = get_db
+    conn = get_db()
     conn.execute('''
         INSERT INTO registros_diarios (data, proteina_consumida, meta_proteina, bateu_meta)
         VALUES (?, ?, ?, ?)
