@@ -1,7 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from datetime import date
+import database
 
 app = Flask(__name__)
 app.secret_key = "chave-so-para-testes-locais"
+
+database.init_db()
 
 
 def calcular_meta(peso, objetivo):
@@ -87,11 +91,36 @@ def tracker():
         progresso=progresso,
     )
 
+@app.route('/registrar', methods=['POST'])
+def registrar():
+    if "meta_min" not in session:
+        return redirect(url_for("cadastro"))
+
+    hoje = date.today().isoformat()
+    meta = session["meta_max"] if session["meta_min"] != session["meta_max"] else session["meta_min"]
+
+    database.salvar_registro(hoje, session["consumo"], meta)
+
+    return redirect(url_for('historico'))
+
+@app.route('/historico')
+def historico():
+    registros = database.listar_registros(limite=30)
+    streak_atual = database.calcular_streak_atual()
+    maior_streak = database.calcular_maior_streak()
+ 
+    return render_template(
+        'historico.html',
+        registros=registros,
+        streak_atual=streak_atual,
+        maior_streak=maior_streak
+    )
 
 @app.route("/reiniciar")
 def reiniciar():
     session.clear()
     return redirect(url_for("cadastro"))
+
 
 
 if __name__ == "__main__":
