@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico - Protein Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Histórico</h1>
+ 
+    <div class="streaks">
+        <p>🔥 Streak atual: <strong>{{ streak_atual }}</strong> dia(s) seguidos batendo a meta</p>
+        <p>🏆 Maior streak já alcançado: <strong>{{ maior_streak }}</strong> dia(s)</p>
+    </div>
+ 
+    <table>
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Proteína consumida</th>
+                <th>Meta</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in registros %}
+            <tr>
+                <td>{{ r['data'] }}</td>
+                <td>{{ r['proteina_consumida'] }}g</td>
+                <td>{{ r['meta_proteina'] }}g</td>
+                <td>{{ '✅' if r['bateu_meta'] == 1 else '❌' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
