@@ -12,7 +12,7 @@
     <main class="card">
         <p class="eyebrow">Olá, {{ nome }}</p>
         <h1>Seu progresso de hoje</h1>
-
+ 
         <div class="ring-wrap">
             <svg viewBox="0 0 160 160" class="ring">
                 <circle cx="80" cy="80" r="70" class="ring-bg"></circle>
@@ -30,7 +30,7 @@
                 </span>
             </div>
         </div>
-
+ 
         <div class="status">
             {% if faixa_unica %}
                 {% if meta_batida %}
@@ -49,14 +49,18 @@
                 {% endif %}
             {% endif %}
         </div>
-
+ 
         <form method="POST" class="form form-inline">
             <label for="consumida">Adicionar proteína consumida (g)</label>
             <input type="number" id="consumida" name="consumida" step="0.1" min="0" placeholder="Ex: 25" required autofocus>
             <button type="submit">Adicionar</button>
         </form>
-
+ 
         <a href="{{ url_for('reiniciar') }}" class="reset-link">Recomeçar o dia</a>
+ 
+        <form method="POST" action="{{ url_for('registrar') }}" class="form">
+            <button type="submit">Salvar dia no histórico</button>
+        </form>
     </main>
 </body>
 </html>
