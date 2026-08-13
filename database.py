@@ -36,12 +36,14 @@ def init_db():
 
 def criar_usuario(nome, objetivo, meta_min, meta_max):
     conn = get_db()
-    conn.execute('''
+    cursor = conn.execute('''
         INSERT INTO usuarios (nome, objetivo, meta_min, meta_max)
         VALUES (?, ?, ?, ?)
     ''', (nome, objetivo, meta_min, meta_max))
     conn.commit()
+    novo_id = cursor.lastrowid
     conn.close()
+    return novo_id
 
 def listar_usuarios():
     conn = get_db()
@@ -49,7 +51,7 @@ def listar_usuarios():
     conn.close()
     return usuarios
 
-def buscar_usuarios(usuario_id):
+def buscar_usuario(usuario_id):
     conn = get_db()
     usuario = conn.execute('SELECT * FROM usuarios WHERE id = ?', (usuario_id,)).fetchone()
     conn.close()
@@ -79,6 +81,14 @@ def listar_registros(usuario_id,limite=30):
     ''', (usuario_id, limite,)).fetchall()
     conn.close()
     return registros
+
+def buscar_registro_dia(usuario_id, data):
+    conn = get_db()
+    registro = conn.execute('''
+        SELECT * FROM registros_diarios WHERE usuario_id = ? AND data = ?
+    ''', (usuario_id, data)).fetchone()
+    conn.close()
+    return registro
 
 def calcular_streak_atual(usuario_id):
     conn = get_db()
