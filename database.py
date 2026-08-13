@@ -10,50 +10,85 @@ def get_db():
 def init_db():
     conn = get_db()
     conn.execute('''
+        CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE,
+        objetivo TEXT NOT NULL,
+        meta_min REAL NOT NULL,
+        meta_max REAL NOT NULL
+        )
+''')
+    conn.execute('''
             CREATE TABLE IF NOT EXISTS registros_diarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            data TEXT NOT NULL UNIQUE,
+            usuario_id INTEGER NOT NULL,
+            data TEXT NOT NULL,
             proteina_consumida REAL NOT NULL,
             meta_proteina REAL NOT NULL,
-            bateu_meta INTEGER NOT NULL
+            bateu_meta INTEGER NOT NULL,
+            UNIQUE(usuario_id, data),
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         )
     ''')
+
     conn.commit()
     conn.close()
 
-def salvar_registro(data, proteina_consumida, meta_proteina):
+def criar_usuario(nome, objetivo, meta_min, meta_max):
+    conn = get_db()
+    conn.execute('''
+        INSERT INTO usuarios (nome, objetivo, meta_min, meta_max)
+        VALUES (?, ?, ?, ?)
+    ''', (nome, objetivo, meta_min, meta_max))
+    conn.commit()
+    conn.close()
+
+def listar_usuarios():
+    conn = get_db()
+    usuarios = conn.execute('SELECT * FROM usuarios ORDER BY nome').fetchall()
+    conn.close()
+    return usuarios
+
+def buscar_usuarios(usuario_id):
+    conn = get_db()
+    usuario = conn.execute('SELECT * FROM usuarios WHERE id = ?', (usuario_id,)).fetchone()
+    conn.close()
+    return usuario
+
+def salvar_registro(usuario_id, data, proteina_consumida, meta_proteina):
     bateu = 1 if proteina_consumida >= meta_proteina else 0
     conn = get_db()
     conn.execute('''
-        INSERT INTO registros_diarios (data, proteina_consumida, meta_proteina, bateu_meta)
-        VALUES (?, ?, ?, ?)
-        ON CONFLICT(data) DO UPDATE SET
+        INSERT INTO registros_diarios (usuario_id, data, proteina_consumida, meta_proteina, bateu_meta)
+        VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT(usuario_id, data) DO UPDATE SET
             proteina_consumida = excluded.proteina_consumida,
             meta_proteina = excluded.meta_proteina,
             bateu_meta = excluded.bateu_meta
-    ''', (data, proteina_consumida, meta_proteina, bateu))
+    ''', (usuario_id, data, proteina_consumida, meta_proteina, bateu))
     conn.commit()
     conn.close()
 
-def listar_registros(limite=30):
+def listar_registros(usuario_id,limite=30):
     conn = get_db()
     registros = conn.execute('''
         SELECT * FROM registros_diarios
+        WHERE usuario_id = ?
         ORDER BY data DESC
         LIMIT ?
-    ''', (limite,)).fetchall()
+    ''', (usuario_id, limite,)).fetchall()
     conn.close()
     return registros
 
-def calcular_streak_atual():
-    """Conta quantos dias seguidos (a partir do mais recente) bateram a meta."""
+def calcular_streak_atual(usuario_id):
     conn = get_db()
     registros = conn.execute('''
         SELECT bateu_meta FROM registros_diarios
+        WHERE usuario_id = ?
         ORDER BY data DESC
-    ''').fetchall()
+    ''', (usuario_id,)).fetchall()
     conn.close()
- 
+
     streak = 0
     for r in registros:
         if r['bateu_meta'] == 1:
@@ -63,13 +98,13 @@ def calcular_streak_atual():
     return streak
  
  
-def calcular_maior_streak():
-    """Percorre todo o histórico (em ordem cronológica) e acha a maior sequência já alcançada."""
+def calcular_maior_streak(usuario_id):
     conn = get_db()
     registros = conn.execute('''
         SELECT bateu_meta FROM registros_diarios
+        WHERE usuario_id = ?
         ORDER BY data ASC
-    ''').fetchall()
+    ''', (usuario_id,)).fetchall()
     conn.close()
  
     maior = 0
@@ -86,3 +121,4 @@ def calcular_maior_streak():
 if __name__ == '__main__':
     init_db()
     print(f'Banco de dados "{DB_NAME}" pronto.')
+    
