@@ -11,29 +11,46 @@
 <body>
     <main class="card">
         <p class="eyebrow">Protein Tracker</p>
-        <h1>Quanto você precisa consumir hoje?</h1>
-        <p class="subtitle">Informe seus dados e a gente calcula sua meta diária de proteína.</p>
+        <h1>Quem está usando?</h1>
+
+        {% if usuarios %}
+        <ul class="user-list">
+            {% for u in usuarios %}
+            <li>
+                <a href="{{ url_for('selecionar_usuario', usuario_id=u['id']) }}" class="user-item">
+                    <span class="user-name">{{ u['nome'] }}</span>
+                    <span class="user-meta mono">{{ u['objetivo'] }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Nenhum usuário cadastrado ainda. Crie o primeiro abaixo.</p>
+        {% endif %}
+
+        <hr class="divider">
+
+        <h2>Criar novo usuário</h2>
 
         {% if erro %}
-            <div class="erro">{{ erro }}</div>
+        <p class="erro">{{ erro }}</p>
         {% endif %}
 
         <form method="POST" class="form">
             <label for="nome">Nome</label>
-            <input type="text" id="nome" name="nome" placeholder="Seu nome" required>
+            <input type="text" id="nome" name="nome" required autofocus>
 
             <label for="peso">Peso (kg)</label>
-            <input type="number" id="peso" name="peso" step="0.1" min="1" placeholder="Ex: 72.5" required>
+            <input type="number" id="peso" name="peso" step="0.1" min="0" required>
 
             <label for="objetivo">Objetivo</label>
             <select id="objetivo" name="objetivo" required>
-                <option value="" disabled selected>Escolha um objetivo</option>
-                <option value="manutenção">Manutenção</option>
+                <option value="manutencao">Manutenção</option>
                 <option value="ganho de massa">Ganho de massa</option>
                 <option value="perda de gordura">Perda de gordura</option>
             </select>
 
-            <button type="submit">Calcular minha meta</button>
+            <button type="submit">Criar e começar</button>
         </form>
     </main>
 </body>
