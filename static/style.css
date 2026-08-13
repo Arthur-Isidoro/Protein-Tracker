@@ -169,3 +169,213 @@ button:hover { opacity: 0.92; }
 }
 
 .reset-link:hover { color: var(--ink); }
+
+/* ===== Navegação, histórico e lista de usuários ===== */
+
+/* Navegação entre abas */
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.nav-tab {
+    padding: 8px 16px;
+    border-radius: 999px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+
+.nav-tab.active {
+    background: var(--accent);
+    color: #FFFFFF;
+    border-color: var(--accent);
+}
+
+.nav-tab-trocar {
+    margin-left: auto;
+    color: var(--muted);
+    border: none;
+    opacity: 0.7;
+}
+
+/* Lista de usuários (tela inicial) */
+.user-list {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    text-decoration: none;
+    color: var(--ink);
+}
+
+.user-item:hover {
+    border-color: var(--accent);
+}
+
+.user-name {
+    font-weight: 600;
+}
+
+.user-meta {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.divider {
+    margin: 24px 0;
+    border: none;
+    border-top: 1px solid var(--border);
+}
+
+/* Cards de streak (histórico) */
+.streak-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.streak-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    background: var(--accent-soft);
+    text-align: center;
+}
+
+.streak-number {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.streak-label {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* Resumo do período */
+.resumo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.resumo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+}
+
+.resumo-numero {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ink);
+}
+
+.resumo-label {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* Tabela de histórico */
+.table-wrap {
+    overflow-x: auto;
+}
+
+.historico-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.historico-table th,
+.historico-table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.historico-table th {
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Link de resumo no tracker */
+.streak-mini {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.streak-mini:hover {
+    text-decoration: underline;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--muted);
+    margin: 24px 0;
+}
+
+/* Responsividade: tabela vira "cards" empilhados em telas pequenas */
+@media (max-width: 480px) {
+    .streak-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .resumo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .historico-table thead {
+        display: none;
+    }
+
+    .historico-table tr {
+        display: block;
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .historico-table td {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: none;
+        padding: 6px 4px;
+    }
+
+    .historico-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--muted);
+    }
+}
