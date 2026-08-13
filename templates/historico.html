@@ -2,36 +2,81 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Histórico - Protein Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico - {{ nome }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Histórico</h1>
+    <main class="card">
+        <nav class="nav-tabs">
+            <a href="{{ url_for('tracker') }}" class="nav-tab">Tracker</a>
+            <a href="{{ url_for('historico') }}" class="nav-tab active">Histórico</a>
+            <a href="{{ url_for('trocar_usuario') }}" class="nav-tab nav-tab-trocar">Trocar usuário</a>
+        </nav>
  
-    <div class="streaks">
-        <p>🔥 Streak atual: <strong>{{ streak_atual }}</strong> dia(s) seguidos batendo a meta</p>
-        <p>🏆 Maior streak já alcançado: <strong>{{ maior_streak }}</strong> dia(s)</p>
-    </div>
+        <p class="eyebrow">Olá, {{ nome }}</p>
+        <h1>Seu histórico</h1>
  
-    <table>
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Proteína consumida</th>
-                <th>Meta</th>
-                <th>Resultado</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in registros %}
-            <tr>
-                <td>{{ r['data'] }}</td>
-                <td>{{ r['proteina_consumida'] }}g</td>
-                <td>{{ r['meta_proteina'] }}g</td>
-                <td>{{ '✅' if r['bateu_meta'] == 1 else '❌' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="streak-cards">
+            <div class="streak-card">
+                {% if streak_atual and streak_atual > 0 %}
+                    <span class="streak-number">🔥 {{ streak_atual }}</span>
+                    <span class="streak-label">dia(s) seguidos batendo a meta</span>
+                {% else %}
+                    <span class="streak-number">—</span>
+                    <span class="streak-label">Nenhuma sequência ativa no momento. Bora começar hoje?</span>
+                {% endif %}
+            </div>
+            <div class="streak-card">
+                <span class="streak-number">🏆 {{ maior_streak }}</span>
+                <span class="streak-label">Melhor sequência já alcançada</span>
+            </div>
+        </div>
+ 
+        {% if total_dias and total_dias > 0 %}
+        <div class="resumo-grid">
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ total_dias }}</span>
+                <span class="resumo-label">dias registrados</span>
+            </div>
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ dias_batidos }}</span>
+                <span class="resumo-label">metas atingidas</span>
+            </div>
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ percentual }}%</span>
+                <span class="resumo-label">taxa de sucesso</span>
+            </div>
+        </div>
+ 
+        <div class="table-wrap">
+            <table class="historico-table">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Consumido</th>
+                        <th>Meta</th>
+                        <th>Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in registros %}
+                    <tr>
+                        <td data-label="Data">{{ r['data'] }}</td>
+                        <td data-label="Consumido" class="mono">{{ r['proteina_consumida'] | round(1) }}g</td>
+                        <td data-label="Meta" class="mono">{{ r['meta_proteina'] | round(1) }}g</td>
+                        <td data-label="Resultado">{{ '✅' if r['bateu_meta'] == 1 else '❌' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty-state">Você ainda não salvou nenhum dia. Volte pro tracker, registre seu consumo e clique em "Salvar dia no histórico".</p>
+        {% endif %}
+    </main>
 </body>
 </html>
+ 
