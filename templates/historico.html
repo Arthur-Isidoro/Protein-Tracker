@@ -64,7 +64,9 @@
                 <tbody>
                     {% for r in registros %}
                     <tr>
-                        <td data-label="Data">{{ r['data'] }}</td>
+                        <td data-label="Data">
+                            <a href="{{ url_for('detalhe_dia', data=r['data']) }}" class="mono link-data">{{ r['data'] }}</a>
+                        </td>
                         <td data-label="Consumido" class="mono">{{ r['proteina_consumida'] | round(1) }}g</td>
                         <td data-label="Meta" class="mono">{{ r['meta_proteina'] | round(1) }}g</td>
                         <td data-label="Resultado">{{ '✅' if r['bateu_meta'] == 1 else '❌' }}</td>
