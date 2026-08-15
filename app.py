@@ -1,12 +1,31 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from datetime import date
+from datetime import date, datetime
 import database
 import sqlite3
+
+MESES_PT = {
+    1: "janeiro", 2: "fevereiro", 3: "março", 4: "abril", 5: "maio", 6: "junho",
+    7: "julho", 8: "agosto", 9: "setembro", 10: "outubro", 11: "novembro", 12: "dezembro"
+}
 
 app = Flask(__name__)
 app.secret_key = "chave-so-para-testes-locais"
 
 database.init_db()
+
+@app.route("/historico/<data>")
+def detalhe_dia(data):
+    if "usuario_id" not in session:
+        return redirect(url_for("cadastro"))
+
+    registro = database.buscar_registro_dia(session["usuario_id"], data)
+    if registro is None:
+        return redirect(url_for("historico"))
+
+    data_obj = datetime.strptime(data, "%Y-%m-%d").date()
+    data_extenso = f"{data_obj.day} de {MESES_PT[data_obj.month]} de {data_obj.year}"
+
+    return render_template("detalhe_dia.html", registro=registro, nome=session["nome"], data_extenso=data_extenso)
 
 def entrar_como(usuario):
     session["usuario_id"] = usuario["id"]
@@ -18,6 +37,7 @@ def entrar_como(usuario):
     hoje = date.today().isoformat()
     registro_hoje = database.buscar_registro_dia(usuario["id"], hoje)
     session["consumo"] = registro_hoje["proteina_consumida"] if registro_hoje else 0.0
+    session["data_sessao"] = hoje
 
 def calcular_meta(peso, objetivo):
     if objetivo in ["manutencao", "manutenção"]:
@@ -83,6 +103,15 @@ def trocar_usuario():
 def tracker():
     if "usuario_id" not in session:
         return redirect(url_for("cadastro"))
+
+    hoje = date.today().isoformat()
+    if session.get("data_sessao") != hoje:
+        registro_hoje = database.buscar_registro_dia(session["usuario_id"], hoje)
+        session["consumo"] = registro_hoje["proteina_consumida"] if registro_hoje else 0.0
+        session["data_sessao"] = hoje
+
+    hoje_data = date.today()
+    hoje_extenso = f"Hoje, {hoje_data.day} de {MESES_PT[hoje_data.month]}"
 
     if request.method == "POST":
         try:
@@ -159,13 +188,6 @@ def historico():
         dias_batidos=dias_batidos,
         percentual=percentual,
     )
-
-@app.route("/reiniciar")
-def reiniciar():
-    session["consumo"] = 0.0
-    return redirect(url_for("tracker"))
-
-
 
 if __name__ == "__main__":
     app.run(debug=True)
