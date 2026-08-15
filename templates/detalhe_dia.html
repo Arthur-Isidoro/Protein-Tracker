@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ data_extenso }} - Protein Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main class="card">
+        <a href="{{ url_for('historico') }}" class="reset-link">&larr; Voltar para o histórico</a>
+
+        <p class="eyebrow">{{ nome }}</p>
+        <h1>{{ data_extenso }}</h1>
+
+        <div class="dia-detalhe">
+            <div class="dia-detalhe-linha">
+                <span class="dia-detalhe-label">Meta</span>
+                <span class="dia-detalhe-valor mono">{{ registro['meta_proteina'] | round(1) }} g</span>
+            </div>
+            <div class="dia-detalhe-linha">
+                <span class="dia-detalhe-label">Consumido</span>
+                <span class="dia-detalhe-valor mono">{{ registro['proteina_consumida'] | round(1) }} g</span>
+            </div>
+            <div class="dia-detalhe-linha">
+                <span class="dia-detalhe-label">Status</span>
+                {% if registro['bateu_meta'] == 1 %}
+                    <span class="status-ok">✅ Meta batida</span>
+                {% else %}
+                    <span class="dia-detalhe-valor">❌ Meta não batida</span>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+</html>
