@@ -18,6 +18,7 @@
 
         <p class="eyebrow">Olá, {{ nome }}</p>
         <h1>Seu progresso de hoje</h1>
+        <p class="data-hoje mono">📅 {{ hoje_extenso }}</p>
 
         <div class="ring-wrap">
             <svg viewBox="0 0 160 160" class="ring">
@@ -41,6 +42,7 @@
             {% if faixa_unica %}
                 {% if meta_batida %}
                     <p class="status-ok">Meta batida! 🎉</p>
+                    <p class="meta-detalhe">Você consumiu <span class="mono">{{ consumo | round(1) }}g</span> de proteína hoje.</p>
                 {% else %}
                     <p>Faltam <span class="mono">{{ restante | round(1) }}g</span> pra bater sua meta.</p>
                 {% endif %}
@@ -61,8 +63,6 @@
             <input type="number" id="consumida" name="consumida" step="0.1" min="0" placeholder="Ex: 25" required autofocus>
             <button type="submit">Adicionar</button>
         </form>
-
-        <a href="{{ url_for('reiniciar') }}" class="reset-link">Recomeçar o dia</a>
 
         <form method="POST" action="{{ url_for('registrar') }}" class="form">
             <button type="submit">Salvar dia no histórico</button>
