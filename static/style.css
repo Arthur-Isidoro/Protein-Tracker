@@ -50,6 +50,13 @@ h1 {
     margin: 0 0 8px;
 }
 
+h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    margin: 0 0 8px;
+    color: var(--ink);
+}
+
 .subtitle {
     color: var(--muted);
     font-size: 15px;
@@ -170,7 +177,20 @@ button:hover { opacity: 0.92; }
 
 .reset-link:hover { color: var(--ink); }
 
-/* ===== Navegação, histórico e lista de usuários ===== */
+/* Data do dia no tracker */
+.data-hoje {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    margin: 0 0 16px;
+}
+
+.meta-detalhe {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 4px;
+}
 
 /* Navegação entre abas */
 .nav-tabs {
@@ -325,6 +345,16 @@ button:hover { opacity: 0.92; }
     font-weight: 600;
 }
 
+/* Link de data no histórico */
+.link-data {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link-data:hover {
+    text-decoration: underline;
+}
+
 /* Link de resumo no tracker */
 .streak-mini {
     display: block;
@@ -344,6 +374,35 @@ button:hover { opacity: 0.92; }
     text-align: center;
     color: var(--muted);
     margin: 24px 0;
+}
+
+/* Página de detalhe do dia */
+.dia-detalhe {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dia-detalhe-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--border);
+}
+
+.dia-detalhe-linha:last-child {
+    border-bottom: none;
+}
+
+.dia-detalhe-label {
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.dia-detalhe-valor {
+    font-weight: 600;
 }
 
 /* Responsividade: tabela vira "cards" empilhados em telas pequenas */
