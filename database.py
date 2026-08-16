@@ -144,7 +144,44 @@ def calcular_maior_streak(usuario_id):
         data_anterior = data_atual
 
     return maior
- 
+
+def calcular_media_geral(usuario_id):
+    conn = get_db()
+    registros = conn.execute('''
+        SELECT proteina_consumida FROM registros_diarios WHERE usuario_id = ?
+    ''', (usuario_id,)).fetchall()
+    conn.close()
+    if not registros:
+        return 0
+    total = sum(r['proteina_consumida'] for r in registros)
+    return round(total / len(registros), 1)
+
+
+def calcular_media_ultimos_dias(usuario_id, dias=7):
+    conn = get_db()
+    registros = conn.execute('''
+        SELECT proteina_consumida FROM registros_diarios
+        WHERE usuario_id = ?
+        ORDER BY data DESC
+        LIMIT ?
+    ''', (usuario_id, dias)).fetchall()
+    conn.close()
+    if not registros:
+        return 0
+    total = sum(r['proteina_consumida'] for r in registros)
+    return round(total / len(registros), 1)
+
+
+def listar_registros_grafico(usuario_id, dias=30):
+    conn = get_db()
+    registros = conn.execute('''
+        SELECT data, proteina_consumida, meta_proteina, bateu_meta FROM registros_diarios
+        WHERE usuario_id = ?
+        ORDER BY data DESC
+        LIMIT ?
+    ''', (usuario_id, dias)).fetchall()
+    conn.close()
+    return list(reversed(registros))
  
 if __name__ == '__main__':
     init_db()
