@@ -29,6 +29,7 @@ registros = [
     ("2026-08-12", 120),
     ("2026-08-13", 152),
     ("2026-08-14", 158),
+    ("2026-08-16", 182),
 ]
 
 meta = 140 
@@ -37,5 +38,5 @@ for data, consumo in registros:
     database.salvar_registro(usuario_id, data, consumo, meta)
 
 print(f"{len(registros)} dias de histórico criados para o usuário 'Teste'.")
-print(f"Streak atual esperado: 2 (dias 13 e 14)")
+print(f"Streak atual esperado: 1 (só o dia 16 -- o dia 15 está faltando, quebrando a sequência)")
 print(f"Maior streak esperado: 4 (dias 08, 09, 10 e 11)")
