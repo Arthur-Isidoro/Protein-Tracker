@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime, timedelta
 
 DB_NAME = 'protein_tracker.db'
 
@@ -93,38 +94,55 @@ def buscar_registro_dia(usuario_id, data):
 def calcular_streak_atual(usuario_id):
     conn = get_db()
     registros = conn.execute('''
-        SELECT bateu_meta FROM registros_diarios
+        SELECT data, bateu_meta FROM registros_diarios
         WHERE usuario_id = ?
         ORDER BY data DESC
     ''', (usuario_id,)).fetchall()
     conn.close()
 
     streak = 0
+    data_esperada = None
     for r in registros:
-        if r['bateu_meta'] == 1:
-            streak += 1
-        else:
+        data_atual = datetime.strptime(r['data'], "%Y-%m-%d").date()
+
+        if data_esperada is not None and data_atual != data_esperada:
             break
+
+        if r['bateu_meta'] != 1:
+            break
+
+        streak += 1
+        data_esperada = data_atual - timedelta(days=1)
+
     return streak
- 
- 
+
+
 def calcular_maior_streak(usuario_id):
     conn = get_db()
     registros = conn.execute('''
-        SELECT bateu_meta FROM registros_diarios
+        SELECT data, bateu_meta FROM registros_diarios
         WHERE usuario_id = ?
         ORDER BY data ASC
     ''', (usuario_id,)).fetchall()
     conn.close()
- 
+
     maior = 0
     atual = 0
+    data_anterior = None
     for r in registros:
+        data_atual = datetime.strptime(r['data'], "%Y-%m-%d").date()
+
         if r['bateu_meta'] == 1:
-            atual += 1
+            if data_anterior is not None and data_atual == data_anterior + timedelta(days=1):
+                atual += 1
+            else:
+                atual = 1
             maior = max(maior, atual)
         else:
             atual = 0
+
+        data_anterior = data_atual
+
     return maior
  
  
