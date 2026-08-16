@@ -9,16 +9,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <main class="card">
+    <main class="card card-wide">
         <nav class="nav-tabs">
             <a href="{{ url_for('tracker') }}" class="nav-tab">Tracker</a>
             <a href="{{ url_for('historico') }}" class="nav-tab active">Histórico</a>
             <a href="{{ url_for('trocar_usuario') }}" class="nav-tab nav-tab-trocar">Trocar usuário</a>
         </nav>
- 
+
         <p class="eyebrow">Olá, {{ nome }}</p>
         <h1>Seu histórico</h1>
- 
+
         <div class="streak-cards">
             <div class="streak-card">
                 {% if streak_atual and streak_atual > 0 %}
@@ -34,7 +34,7 @@
                 <span class="streak-label">Melhor sequência já alcançada</span>
             </div>
         </div>
- 
+
         {% if total_dias and total_dias > 0 %}
         <div class="resumo-grid">
             <div class="resumo-item">
@@ -50,7 +50,36 @@
                 <span class="resumo-label">taxa de sucesso</span>
             </div>
         </div>
- 
+
+        <h2 class="secao-titulo">📊 Estatísticas</h2>
+
+        <div class="resumo-grid">
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ media_geral }}g</span>
+                <span class="resumo-label">média geral</span>
+            </div>
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ media_7 }}g</span>
+                <span class="resumo-label">média 7 dias</span>
+            </div>
+            <div class="resumo-item">
+                <span class="resumo-numero">{{ media_30 }}g</span>
+                <span class="resumo-label">média 30 dias</span>
+            </div>
+        </div>
+
+        <div class="chart-wrap">
+            <div class="chart">
+                {% for d in grafico %}
+                <div class="chart-col" title="{{ d.dia_curto }}: {{ d.consumido }}g (meta {{ d.meta }}g)">
+                    <div class="chart-meta-line" style="bottom: {{ d.altura_meta }}%;"></div>
+                    <div class="chart-bar {{ 'chart-bar-ok' if d.bateu else 'chart-bar-fail' }}" style="height: {{ d.altura_barra }}%;"></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <p class="chart-legend">Últimos {{ grafico|length }} dia(s) — <span class="legenda-ok">■</span> meta batida · <span class="legenda-fail">■</span> meta não batida · linha tracejada = meta do dia</p>
+
         <div class="table-wrap">
             <table class="historico-table">
                 <thead>
@@ -81,4 +110,3 @@
     </main>
 </body>
 </html>
- 
