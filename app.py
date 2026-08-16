@@ -104,13 +104,18 @@ def tracker():
     if "usuario_id" not in session:
         return redirect(url_for("cadastro"))
 
-    hoje = date.today().isoformat()
+    hoje_data = date.today()
+    hoje = hoje_data.isoformat()
+
     if session.get("data_sessao") != hoje:
+        if "data_sessao" in session and session.get("consumo", 0) > 0:
+            meta_anterior = session["meta_max"] if session["meta_min"] != session["meta_max"] else session["meta_min"]
+            database.salvar_registro(session["usuario_id"], session["data_sessao"], session["consumo"], meta_anterior)
+
         registro_hoje = database.buscar_registro_dia(session["usuario_id"], hoje)
         session["consumo"] = registro_hoje["proteina_consumida"] if registro_hoje else 0.0
         session["data_sessao"] = hoje
 
-    hoje_data = date.today()
     hoje_extenso = f"Hoje, {hoje_data.day} de {MESES_PT[hoje_data.month]}"
 
     if request.method == "POST":
@@ -125,6 +130,7 @@ def tracker():
     consumo = session["consumo"]
 
     faixa_unica = meta_min == meta_max
+    meta_max_batida = None
     if faixa_unica:
         meta_batida = consumo >= meta_min
         restante = max(meta_min - consumo, 0)
@@ -146,10 +152,11 @@ def tracker():
         consumo=consumo,
         faixa_unica=faixa_unica,
         meta_batida=meta_batida,
-        meta_max_batida=None if faixa_unica else meta_max_batida,
+        meta_max_batida=meta_max_batida,
         restante=restante,
         progresso=progresso,
         streak_atual=streak_atual,
+        hoje_extenso=hoje_extenso,
     )
 
 @app.route('/registrar', methods=['POST'])
