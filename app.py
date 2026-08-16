@@ -185,6 +185,28 @@ def historico():
     dias_batidos = sum(1 for r in registros if r["bateu_meta"] == 1)
     percentual = round((dias_batidos / total_dias) * 100, 1) if total_dias else 0
 
+    media_geral = database.calcular_media_geral(usuario_id)
+    media_7 = database.calcular_media_ultimos_dias(usuario_id, dias=7)
+    media_30 = database.calcular_media_ultimos_dias(usuario_id, dias=30)
+
+    registros_grafico = database.listar_registros_grafico(usuario_id, dias=30)
+    if registros_grafico:
+        valor_max = max(max(r["proteina_consumida"], r["meta_proteina"]) for r in registros_grafico)
+    else:
+        valor_max = 1
+
+    grafico = []
+    for r in registros_grafico:
+        data_obj = datetime.strptime(r["data"], "%Y-%m-%d")
+        grafico.append({
+            "dia_curto": data_obj.strftime("%d/%m"),
+            "consumido": r["proteina_consumida"],
+            "meta": r["meta_proteina"],
+            "bateu": r["bateu_meta"] == 1,
+            "altura_barra": round((r["proteina_consumida"] / valor_max) * 100, 1) if valor_max else 0,
+            "altura_meta": round((r["meta_proteina"] / valor_max) * 100, 1) if valor_max else 0,
+        })
+
     return render_template(
         'historico.html',
         nome=session["nome"],
@@ -194,6 +216,10 @@ def historico():
         total_dias=total_dias,
         dias_batidos=dias_batidos,
         percentual=percentual,
+        media_geral=media_geral,
+        media_7=media_7,
+        media_30=media_30,
+        grafico=grafico,
     )
 
 if __name__ == "__main__":
