@@ -18,7 +18,7 @@ def init_db():
         meta_min REAL NOT NULL,
         meta_max REAL NOT NULL
         )
-''')
+    ''')
     conn.execute('''
             CREATE TABLE IF NOT EXISTS registros_diarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -28,6 +28,17 @@ def init_db():
             meta_proteina REAL NOT NULL,
             bateu_meta INTEGER NOT NULL,
             UNIQUE(usuario_id, data),
+            FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+        )
+    ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS itens_consumidos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            usuario_id INTEGER NOT NULL,
+            data TEXT NOT NULL,
+            refeicao TEXT NOT NULL,
+            alimento TEXT NOT NULL,
+            gramas REAL NOT NULL,
             FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
         )
     ''')
@@ -182,6 +193,43 @@ def listar_registros_grafico(usuario_id, dias=30):
     ''', (usuario_id, dias)).fetchall()
     conn.close()
     return list(reversed(registros))
+
+def adicionar_item(usuario_id, data, refeicao, alimento, gramas):
+    conn = get_db()
+    conn.execute('''
+        INSERT INTO itens_consumidos (usuario_id, data, refeicao, alimento, gramas)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (usuario_id, data, refeicao, alimento, gramas))
+    conn.commit()
+    conn.close()
+
+
+def listar_itens_dia(usuario_id, data):
+    conn = get_db()
+    itens = conn.execute('''
+        SELECT * FROM itens_consumidos
+        WHERE usuario_id = ? AND data = ?
+        ORDER BY id ASC
+    ''', (usuario_id, data)).fetchall()
+    conn.close()
+    return itens
+
+
+def remover_item(item_id, usuario_id):
+    conn = get_db()
+    conn.execute('DELETE FROM itens_consumidos WHERE id = ? AND usuario_id = ?', (item_id, usuario_id))
+    conn.commit()
+    conn.close()
+
+
+def somar_consumo_dia(usuario_id, data):
+    conn = get_db()
+    resultado = conn.execute('''
+        SELECT SUM(gramas) as total FROM itens_consumidos
+        WHERE usuario_id = ? AND data = ?
+    ''', (usuario_id, data)).fetchone()
+    conn.close()
+    return resultado['total'] if resultado['total'] else 0.0
  
 if __name__ == '__main__':
     init_db()
