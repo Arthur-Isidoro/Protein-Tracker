@@ -25,7 +25,9 @@ def detalhe_dia(data):
     data_obj = datetime.strptime(data, "%Y-%m-%d").date()
     data_extenso = f"{data_obj.day} de {MESES_PT[data_obj.month]} de {data_obj.year}"
 
-    return render_template("detalhe_dia.html", registro=registro, nome=session["nome"], data_extenso=data_extenso)
+    itens = database.listar_itens_dia(session["usuario_id"], data)
+
+    return render_template("detalhe_dia.html", registro=registro, nome=session["nome"], data_extenso=data_extenso, itens=itens)
 
 def entrar_como(usuario):
     session["usuario_id"] = usuario["id"]
