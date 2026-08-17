@@ -33,11 +33,7 @@ def entrar_como(usuario):
     session["objetivo"] = usuario["objetivo"]
     session["meta_min"] = usuario["meta_min"]
     session["meta_max"] = usuario["meta_max"]
-
-    hoje = date.today().isoformat()
-    registro_hoje = database.buscar_registro_dia(usuario["id"], hoje)
-    session["consumo"] = registro_hoje["proteina_consumida"] if registro_hoje else 0.0
-    session["data_sessao"] = hoje
+    session["data_sessao"] = date.today().isoformat()
 
 def calcular_meta(peso, objetivo):
     if objetivo in ["manutencao", "manutenção"]:
@@ -108,26 +104,33 @@ def tracker():
     hoje = hoje_data.isoformat()
 
     if session.get("data_sessao") != hoje:
-        if "data_sessao" in session and session.get("consumo", 0) > 0:
-            meta_anterior = session["meta_max"] if session["meta_min"] != session["meta_max"] else session["meta_min"]
-            database.salvar_registro(session["usuario_id"], session["data_sessao"], session["consumo"], meta_anterior)
-
-        registro_hoje = database.buscar_registro_dia(session["usuario_id"], hoje)
-        session["consumo"] = registro_hoje["proteina_consumida"] if registro_hoje else 0.0
+        if "data_sessao" in session:
+            consumo_anterior = database.somar_consumo_dia(session["usuario_id"], session["data_sessao"])
+            if consumo_anterior > 0:
+                meta_anterior = session["meta_max"] if session["meta_min"] != session["meta_max"] else session["meta_min"]
+                database.salvar_registro(session["usuario_id"], session["data_sessao"], consumo_anterior, meta_anterior)
         session["data_sessao"] = hoje
 
     hoje_extenso = f"Hoje, {hoje_data.day} de {MESES_PT[hoje_data.month]}"
 
     if request.method == "POST":
+        refeicao = request.form.get("refeicao", "").strip()
+        alimento = request.form.get("alimento", "").strip()
         try:
-            consumida = float(request.form.get("consumida", ""))
-            session["consumo"] += consumida
+            gramas = float(request.form.get("gramas", ""))
         except ValueError:
-            pass
+            gramas = None
+
+        if refeicao and alimento and gramas is not None and gramas > 0:
+            database.adicionar_item(session["usuario_id"], hoje, refeicao, alimento, gramas)
+
+        return redirect(url_for("tracker"))
+
+    consumo = database.somar_consumo_dia(session["usuario_id"], hoje)
+    itens_hoje = database.listar_itens_dia(session["usuario_id"], hoje)
 
     meta_min = session["meta_min"]
     meta_max = session["meta_max"]
-    consumo = session["consumo"]
 
     faixa_unica = meta_min == meta_max
     meta_max_batida = None
@@ -157,6 +160,7 @@ def tracker():
         progresso=progresso,
         streak_atual=streak_atual,
         hoje_extenso=hoje_extenso,
+        itens_hoje=itens_hoje,
     )
 
 @app.route('/registrar', methods=['POST'])
@@ -166,10 +170,18 @@ def registrar():
 
     hoje = date.today().isoformat()
     meta = session["meta_max"] if session["meta_min"] != session["meta_max"] else session["meta_min"]
+    consumo = database.somar_consumo_dia(session["usuario_id"], hoje)
 
-    database.salvar_registro(session["usuario_id"], hoje, session["consumo"], meta)
+    database.salvar_registro(session["usuario_id"], hoje, consumo, meta)
 
     return redirect(url_for('historico'))
+
+@app.route("/remover-item/<int:item_id>")
+def remover_item_rota(item_id):
+    if "usuario_id" not in session:
+        return redirect(url_for("cadastro"))
+    database.remover_item(item_id, session["usuario_id"])
+    return redirect(url_for("tracker"))
 
 @app.route('/historico')
 def historico():
