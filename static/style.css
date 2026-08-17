@@ -541,3 +541,24 @@ button:hover { opacity: 0.92; }
 .item-remover:hover {
     color: var(--warn);
 }
+
+.item-remover-form {
+    display: inline;
+    margin: 0;
+}
+
+.item-remover-form .item-remover {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 2px 6px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+}
+
+.item-remover-form .item-remover:hover {
+    color: var(--warn);
+    opacity: 1;
+}
