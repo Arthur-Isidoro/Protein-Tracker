@@ -58,11 +58,42 @@
             {% endif %}
         </div>
 
-        <form method="POST" class="form form-inline">
-            <label for="consumida">Adicionar proteína consumida (g)</label>
-            <input type="number" id="consumida" name="consumida" step="0.1" min="0" placeholder="Ex: 25" required autofocus>
-            <button type="submit">Adicionar</button>
+        <form method="POST" class="form">
+            <label for="refeicao">Refeição</label>
+            <input type="text" id="refeicao" name="refeicao" list="refeicoes-sugeridas" placeholder="Ex: Café da manhã" required autofocus>
+            <datalist id="refeicoes-sugeridas">
+                <option value="Café da manhã">
+                <option value="Almoço">
+                <option value="Lanche">
+                <option value="Jantar">
+                <option value="Ceia">
+            </datalist>
+
+            <label for="alimento">Alimento</label>
+            <input type="text" id="alimento" name="alimento" placeholder="Ex: Ovos" required>
+
+            <label for="gramas">Proteína (g)</label>
+            <input type="number" id="gramas" name="gramas" step="0.1" min="0" placeholder="Ex: 18" required>
+
+            <button type="submit">Adicionar item</button>
         </form>
+
+        {% if itens_hoje %}
+        <div class="itens-hoje">
+            {% set refeicoes_vistas = [] %}
+            {% for item in itens_hoje %}
+                {% if item['refeicao'] not in refeicoes_vistas %}
+                    {% set _ = refeicoes_vistas.append(item['refeicao']) %}
+                    <p class="refeicao-titulo">{{ item['refeicao'] }}</p>
+                {% endif %}
+                <div class="item-linha">
+                    <span class="item-nome">{{ item['alimento'] }}</span>
+                    <span class="item-gramas mono">{{ item['gramas'] | round(1) }}g</span>
+                    <a href="{{ url_for('remover_item_rota', item_id=item['id']) }}" class="item-remover" title="Remover">✕</a>
+                </div>
+            {% endfor %}
+        </div>
+        {% endif %}
 
         <form method="POST" action="{{ url_for('registrar') }}" class="form">
             <button type="submit">Salvar dia no histórico</button>
