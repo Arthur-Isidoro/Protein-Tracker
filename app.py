@@ -178,7 +178,7 @@ def registrar():
 
     return redirect(url_for('historico'))
 
-@app.route("/remover-item/<int:item_id>")
+@app.route("/remover-item/<int:item_id>", methods=["POST"])
 def remover_item_rota(item_id):
     if "usuario_id" not in session:
         return redirect(url_for("cadastro"))
