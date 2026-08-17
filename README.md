@@ -18,7 +18,7 @@ Começou como um script de terminal em Python, virou uma aplicação web simples
    - Estatísticas: média geral, média dos últimos 7 e dos últimos 30 dias
    - Um gráfico de barras dos últimos 30 dias, com uma linha marcando a meta de cada dia
    - Uma tabela com todos os dias registrados
-7. Clicando em qualquer data do histórico, você vê o detalhe daquele dia (meta, consumido e status)
+7. Clicando em qualquer data do histórico, você vê o detalhe daquele dia (meta, consumido, status) e também as refeições detalhadas daquele dia, quando disponíveis
 8. É possível trocar de usuário a qualquer momento, mantendo o histórico de cada um separado
 
 ## Como rodar localmente
@@ -50,7 +50,13 @@ Se quiser testar o app já com usuários e histórico preenchidos (sem precisar 
 python seed_teste.py
 ```
 
-Isso cria usuários de teste com semanas de histórico, streaks quebrados e contínuos, refeições detalhadas do dia atual, e diferentes objetivos — bom pra ver todas as telas funcionando com dados variados de uma vez.
+Isso cria 3 usuários de teste:
+
+- **Teste** — ganho de massa, 21 dias de histórico com streaks quebrados e refeições detalhadas (Café da manhã, Almoço, Lanche, Jantar) em todos os dias, incluindo hoje
+- **Testestreak** — manutenção, 10 dias seguidos batendo a meta, com refeições detalhadas em todos os dias, pra ver um streak longo e contínuo
+- **Testezerado** — cadastrado, mas sem nenhum registro, pra testar as telas de "nenhum dado"
+
+O script é seguro de rodar mais de uma vez: ele reaproveita os usuários já existentes e substitui as refeições de cada dia em vez de duplicá-las.
 
 ## Estrutura do projeto
 
@@ -58,14 +64,14 @@ Isso cria usuários de teste com semanas de histórico, streaks quebrados e cont
 Protein-Tracker/
 ├── app.py                  # rotas Flask, lógica de cálculo da meta e sessão do usuário
 ├── database.py              # criação das tabelas e todas as queries no SQLite
-├── seed_teste.py             # script opcional para gerar usuários de teste com histórico completo
+├── seed_teste.py             # script opcional para gerar usuários de teste com histórico e refeições completas
 ├── requirements.txt          # dependências do projeto
 ├── protein_tracker.db        # banco de dados SQLite (gerado localmente, fora do repositório)
 ├── templates/
 │   ├── cadastro.html         # lista de usuários cadastrados + criação de novo usuário
 │   ├── tracker.html          # registro de refeições do dia e progresso da meta
 │   ├── historico.html        # streaks, estatísticas, gráfico e tabela de dias
-│   └── detalhe_dia.html      # detalhe de um dia específico do histórico
+│   └── detalhe_dia.html      # detalhe de um dia específico do histórico, com refeições
 └── static/
     └── style.css              # estilos das páginas
 ```
@@ -76,7 +82,7 @@ O app usa SQLite (`protein_tracker.db`), com três tabelas:
 
 - **usuarios** — nome, objetivo e meta de proteína (mínima e máxima) de cada pessoa cadastrada
 - **registros_diarios** — um resumo por usuário por dia: total consumido, meta do dia, e se ela foi atingida. É essa tabela que alimenta o histórico, o streak e o gráfico
-- **itens_consumidos** — cada item de refeição registrado (refeição, alimento, gramas de proteína), usado pra montar a lista do dia atual no tracker. O total de `registros_diarios` é calculado somando os itens desse dia
+- **itens_consumidos** — cada item de refeição registrado (refeição, alimento, gramas de proteína), por usuário e data. Usada tanto pra montar a lista do dia atual no tracker quanto o detalhamento de refeições de qualquer dia passado no histórico. O total de `registros_diarios` é calculado somando os itens daquele dia
 
 O arquivo `.db` não vai para o repositório (está no `.gitignore`) — cada pessoa que clonar o projeto gera o próprio banco localmente rodando `python database.py`.
 
@@ -94,7 +100,6 @@ O arquivo `.db` não vai para o repositório (está no `.gitignore`) — cada pe
 - Separar a lógica de cálculo em um módulo próprio
 - Autenticação real (login com senha) em vez de seleção livre de usuário
 - Editar um item de refeição já adicionado (hoje só é possível remover e adicionar de novo)
-- Ver o detalhe das refeições também nos dias passados do histórico, não só no dia atual
 
 ## Sobre
 
