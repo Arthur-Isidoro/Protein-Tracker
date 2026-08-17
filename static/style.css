@@ -339,7 +339,6 @@ button:hover { opacity: 0.92; }
     font-weight: 600;
 }
 
-/* Link de data no histórico */
 .link-data {
     color: var(--accent);
     text-decoration: none;
@@ -369,7 +368,6 @@ button:hover { opacity: 0.92; }
     margin: 24px 0;
 }
 
-/* Página de detalhe do dia */
 .dia-detalhe {
     margin-top: 24px;
     display: flex;
@@ -496,5 +494,50 @@ button:hover { opacity: 0.92; }
 }
 
 .legenda-fail {
+    color: var(--warn);
+}
+
+.itens-hoje {
+    margin: 20px 0;
+}
+
+.refeicao-titulo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 16px 0 6px;
+}
+
+.refeicao-titulo:first-child {
+    margin-top: 0;
+}
+
+.item-linha {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 4px;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+}
+
+.item-nome {
+    flex: 1;
+}
+
+.item-gramas {
+    color: var(--muted);
+    margin: 0 12px;
+}
+
+.item-remover {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 2px 6px;
+}
+
+.item-remover:hover {
     color: var(--warn);
 }
