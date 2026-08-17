@@ -33,6 +33,25 @@
                 {% endif %}
             </div>
         </div>
+
+        {% if itens %}
+        <h2 class="secao-titulo">Refeições do dia</h2>
+        <div class="itens-hoje">
+            {% set refeicoes_vistas = [] %}
+            {% for item in itens %}
+                {% if item['refeicao'] not in refeicoes_vistas %}
+                    {% set _ = refeicoes_vistas.append(item['refeicao']) %}
+                    <p class="refeicao-titulo">{{ item['refeicao'] }}</p>
+                {% endif %}
+                <div class="item-linha">
+                    <span class="item-nome">{{ item['alimento'] }}</span>
+                    <span class="item-gramas mono">{{ item['gramas'] | round(1) }}g</span>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">Esse dia foi salvo sem o detalhamento por refeição.</p>
+        {% endif %}
     </main>
 </body>
 </html>
