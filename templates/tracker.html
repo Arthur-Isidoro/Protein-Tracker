@@ -89,7 +89,9 @@
                 <div class="item-linha">
                     <span class="item-nome">{{ item['alimento'] }}</span>
                     <span class="item-gramas mono">{{ item['gramas'] | round(1) }}g</span>
-                    <a href="{{ url_for('remover_item_rota', item_id=item['id']) }}" class="item-remover" title="Remover">✕</a>
+                    <form method="POST" action="{{ url_for('remover_item_rota', item_id=item['id']) }}" class="item-remover-form">
+                        <button type="submit" class="item-remover" title="Remover">✕</button>
+                    </form>
                 </div>
             {% endfor %}
         </div>
