@@ -1,76 +1,49 @@
-<h1>Protein Tracker</h1>
+# Protein Tracker
 
-<p>
-  A daily protein intake calculator and tracker with a web interface built with Flask
-  and data persistence using SQLite.
-</p>
+A daily protein intake calculator and tracker with a web interface built with **Flask** and data persistence using **SQLite**.
 
-<p>
-  The project calculates a user's daily protein target based on their body weight and
-  goal (maintenance, muscle gain, or fat loss), allows them to track their protein
-  intake by meal throughout the day, keeps a history with statistics and charts, and
-  supports multiple users stored in the same database.
-</p>
+The app calculates a personalized daily protein target based on the user's body weight and goal (maintenance, muscle gain, or fat loss), lets them log their intake meal by meal throughout the day, and keeps a complete history tracking with statistics, charts, and streaks. It supports multiple users, each with their own separate history stored in the same database.
 
-<p>
-  It started as a Python terminal script, evolved into a simple web application, and
-  eventually became this version with a complete history and meal-by-meal tracking.
-</p>
+It started as a simple Python terminal script, evolved into a basic web application, and eventually became this version with complete history tracking and meal-by-meal logging.
 
-<h2>How It Works</h2>
+---
 
-<ol>
-  <li>On the home screen, you can select an existing user or create a new one by entering their name, weight, and goal.</li>
+## Features
 
-  <li>The app calculates the user's daily protein target.</li>
+- 🎯 **Personalized daily target** based on body weight and goal
+- 🍽️ **Meal-by-meal logging** (e.g., Breakfast → Eggs 18g, Yogurt 12g)
+- 🔵 **Progress ring** showing how much protein is left to reach the daily target
+- 🔁 **Automatic day rollover** — no manual reset needed
+- 🔥 **Streaks** — current and longest streak of days hitting the target
+- 📊 **Statistics & charts** — overall, 7-day, and 30-day averages, plus a 30-day bar chart with a target line
+- 📅 **Day details** — click any date in the history to see that day's target, total consumed, status, and recorded meals
+- 👥 **Multiple users** — switch between users at any time, with fully separate histories
 
-  <li>
-    Throughout the day, you can record what you consumed in each meal
-    (e.g., "Breakfast" → Eggs 18g, Yogurt 12g).
-    The total daily intake is calculated by adding all recorded items.
-  </li>
+---
 
-  <li>
-    A progress ring visually shows how much protein is left to reach the daily target,
-    with an explicit notification when the target is reached.
-  </li>
+## How It Works
 
-  <li>
-    The day changes automatically: as soon as the date changes, the previous day's
-    intake is saved to the history without requiring any manual action.
-  </li>
+1. On the home screen, select an existing user or create a new one by entering their name, weight, and goal.
+2. The app calculates that user's daily protein target.
+3. Throughout the day, record what you consumed per meal. The total daily intake is the sum of all recorded items.
+4. A progress ring shows how much protein is left to reach the target, with a notification when it's reached.
+5. At midnight, the day rolls over automatically — the previous day is saved to history with no action needed.
+6. The **History** tab shows:
+   - Current streak and longest streak (both reset correctly when a day is missed)
+   - Overall, 7-day, and 30-day averages
+   - A 30-day bar chart with each day's target plotted as a line
+   - A table of all recorded days
+7. Clicking any date opens that day's details — target, amount consumed, status, and detailed meals (when available).
+8. Users can be switched at any time without mixing up histories.
 
-  <li>
-    The History tab displays:
-    <ul>
-      <li>
-        The current streak of consecutive days reaching the target and the longest
-        streak ever achieved. Both correctly reset when a day is missed.
-      </li>
-      <li>Statistics: overall average, 7-day average, and 30-day average.</li>
-      <li>
-        A bar chart showing the last 30 days, with a line representing each day's target.
-      </li>
-      <li>A table containing all recorded days.</li>
-    </ul>
-  </li>
+---
 
-  <li>
-    Clicking on any date in the history shows that day's details
-    (target, consumed amount, and status), as well as the detailed meals recorded
-    for that day, when available.
-  </li>
+## Getting Started
 
-  <li>
-    Users can be switched at any time, while keeping each user's history separate.
-  </li>
-</ol>
+**Prerequisite:** Python 3 installed.
 
-<h2>Running Locally</h2>
-
-<p><strong>Prerequisite:</strong> Python 3 installed.</p>
-
-<pre><code># clone the repository
+```bash
+# clone the repository
 git clone https://github.com/Arthur-Isidoro/Protein-Tracker.git
 cd Protein-Tracker
 
@@ -81,135 +54,82 @@ pip install -r requirements.txt
 python database.py
 
 # run the application
-python app.py</code></pre>
+python app.py
+```
 
-<p>
-  Then open <code>http://127.0.0.1:5000</code> in your browser.
-</p>
+Then open **http://127.0.0.1:5000** in your browser.
 
-<h3>Quick Test</h3>
+### Quick Test (seed data)
 
-<p>
-  If you want to test the app with pre-populated users and history without having to
-  create everything from scratch or wait for real days to pass, run:
-</p>
+To try the app with pre-populated users and history — instead of creating everything from scratch or waiting for real days to pass — run:
 
-<pre><code>python seed_teste.py</code></pre>
+```bash
+python seed_teste.py
+```
 
-<p>This creates three test users:</p>
+This creates three test users:
 
-<ul>
-  <li>
-    <strong>Teste</strong> — muscle gain, 21 days of history with broken streaks and
-    detailed meals (Breakfast, Lunch, Snack, Dinner) for every day, including today.
-  </li>
+| User | Goal | Description |
+|---|---|---|
+| **Teste** | Muscle gain | 21 days of history with broken streaks and full meals (Breakfast, Lunch, Snack, Dinner) every day, including today |
+| **Testestreak** | Maintenance | 10 consecutive days hitting the target, with full meals — good for seeing a long, continuous streak |
+| **Testezerado** | — | Registered with no records — useful for testing empty-state screens |
 
-  <li>
-    <strong>Testestreak</strong> — maintenance, 10 consecutive days reaching the target,
-    with detailed meals for every day, allowing you to see a long, continuous streak.
-  </li>
+The script is safe to run multiple times: it reuses existing test users and replaces each day's meals instead of duplicating them.
 
-  <li>
-    <strong>Testezerado</strong> — registered user with no records, useful for testing
-    empty-state screens.
-  </li>
-</ul>
+---
 
-<p>
-  The script is safe to run multiple times. It reuses existing test users and replaces
-  each day's meals instead of creating duplicates.
-</p>
+## Project Structure
 
-<h2>Project Structure</h2>
-
-<pre><code>Protein-Tracker/
+```
+Protein-Tracker/
 ├── app.py                  # Flask routes, target calculation logic, and user session
-├── database.py             # database table creation and all SQLite queries
-├── seed_teste.py           # optional script to generate test users with history and complete meals
-├── requirements.txt        # project dependencies
-├── protein_tracker.db      # SQLite database (generated locally, not included in the repository)
+├── database.py              # database table creation and all SQLite queries
+├── seed_teste.py            # optional script to generate test users with history and meals
+├── requirements.txt         # project dependencies
+├── protein_tracker.db       # SQLite database (generated locally, not included in the repo)
 ├── templates/
-│   ├── cadastro.html       # registered users list + new user creation
-│   ├── tracker.html        # daily meal tracking and target progress
-│   ├── historico.html      # streaks, statistics, chart, and daily records table
-│   └── detalhe_dia.html    # details of a specific day, including meals
+│   ├── cadastro.html        # registered users list + new user creation
+│   ├── tracker.html         # daily meal tracking and target progress
+│   ├── historico.html       # streaks, statistics, chart, and daily records table
+│   └── detalhe_dia.html     # details of a specific day, including meals
 └── static/
-    └── style.css           # page styles</code></pre>
+    └── style.css             # page styles
+```
 
-<h2>Database</h2>
+---
 
-<p>
-  The app uses SQLite (<code>protein_tracker.db</code>) with three tables:
-</p>
+## Database
 
-<ul>
-  <li>
-    <strong>usuarios</strong> — stores each user's name, goal, and minimum/maximum
-    protein target.
-  </li>
+The app uses SQLite (`protein_tracker.db`) with three tables:
 
-  <li>
-    <strong>registros_diarios</strong> — stores one daily summary per user:
-    total protein consumed, daily target, and whether the target was reached.
-    This table powers the history, streaks, and chart.
-  </li>
+- **`usuarios`** — each user's name, goal, and minimum/maximum protein target.
+- **`registros_diarios`** — one daily summary per user (total protein consumed, daily target, whether it was reached). Powers the history, streaks, and chart.
+- **`itens_consumidos`** — each recorded meal item (meal, food, grams of protein) by user and date. Used to build the current day's tracker and to show detailed meals for past days. The total in `registros_diarios` is the sum of that day's items.
 
-  <li>
-    <strong>itens_consumidos</strong> — stores each recorded meal item
-    (meal, food, and grams of protein) by user and date. It is used to build the
-    current day's tracker and display detailed meals for previous days in the history.
-    The total in <code>registros_diarios</code> is calculated by summing the items
-    recorded for that day.
-  </li>
-</ul>
+The `.db` file is **not** included in the repository (it's in `.gitignore`). Each person who clones the project creates their own local database by running `python database.py`.
 
-<p>
-  The <code>.db</code> file is not included in the repository (it is listed in
-  <code>.gitignore</code>). Each person who clones the project creates their own
-  local database by running <code>python database.py</code>.
-</p>
+---
 
-<h2>How the Protein Target Is Calculated</h2>
+## How the Protein Target Is Calculated
 
-<table>
-  <thead>
-    <tr>
-      <th>Goal</th>
-      <th>Protein per kg of body weight</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Maintenance</td>
-      <td>1.6 g/kg</td>
-    </tr>
-    <tr>
-      <td>Muscle Gain</td>
-      <td>1.8 g/kg to 2.2 g/kg</td>
-    </tr>
-    <tr>
-      <td>Fat Loss</td>
-      <td>2.0 g/kg to 2.4 g/kg</td>
-    </tr>
-  </tbody>
-</table>
+| Goal | Protein per kg of body weight |
+|---|---|
+| Maintenance | 1.6 g/kg |
+| Muscle Gain | 1.8 – 2.2 g/kg |
+| Fat Loss | 2.0 – 2.4 g/kg |
 
-<h2>Possible Next Steps</h2>
+---
 
-<ul>
-  <li>Migrate from SQLite to MySQL.</li>
-  <li>Move the target calculation logic into its own module.</li>
-  <li>
-    Implement real authentication (password-based login) instead of user selection.
-  </li>
-  <li>
-    Allow users to edit an existing meal entry instead of having to remove and add it again.
-  </li>
-</ul>
+## Possible Next Steps
 
-<h2>About</h2>
+- Migrate from SQLite to MySQL
+- Move the target calculation logic into its own module
+- Implement real authentication (password-based login) instead of user selection
+- Allow editing an existing meal entry instead of removing and re-adding it
 
-<p>
-  Personal project created to practice Python after completing an introductory
-  programming course.
-</p>
+---
+
+## About
+
+Personal project built to practice and apply Python backend development concepts. It started as a terminal script and evolved step by step into a full Flask + SQLite web application with multi-user support, persistent data, and detailed history tracking.
